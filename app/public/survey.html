@@ -33,7 +33,17 @@
                     <hr>
                     <h3>Take the survey and see your match!</h3>
                     <br>
-                    <a href='/' role='button' class='btn btn-primary'><i class='fa fa-home'></i> Go Home</a>
+                    <!-- survey form -->
+                    <form>
+                        <div id="survey-form">
+                            <div class='card bg-light mb-3'>
+                                <div id='survey-form-header' class='card-header'>
+                                </div>
+                                <div id='survey-form-body' class="card-body">
+                                </div>
+                            </div>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>
@@ -44,24 +54,6 @@
                     <a class="nav-link" href="/api/friends">API Friends</a>
                     <a class="nav-link" href="/">Home</a>
                 </nav>
-            </div>
-        </div>
-        <!-- Survey -->
-        <div class='row'>
-            <div class="col-md-12">
-                <form>
-                    <h3>Survey</h3>
-                    <div id="survey-form">
-                        <div class='card bg-light mb-3'>
-                            <div id='survey-form-header' class='card-header'>
-
-                            </div>
-                            <div id='survey-form-body' class="card-body">
-
-                            </div>
-                        </div>
-                    </div>
-                </form>
             </div>
         </div>
         <!-- match modal -->
@@ -113,48 +105,49 @@
         ];
         let surveyQuestions = [
             {
-                questionText: 'First question',
+                questionText: 'I am an night owl.  I prefer to stay up late than getting up before 8am.',
                 possibleResponses: possibleResponses
             },
             {
-                questionText: 'Second question',
+                questionText: 'I\'d rather read a good book than go to the movies',
                 possibleResponses: possibleResponses
             },
             {
-                questionText: 'Third question',
+                questionText: 'I prefer hot, humid weather more than freezing cold.',
                 possibleResponses: possibleResponses
             },
             {
-                questionText: 'Fourth question',
+                questionText: 'When I taste something terrible, I will taste it again to make sure it truly was terrible.',
                 possibleResponses: possibleResponses
             },
             {
-                questionText: 'Fifth question',
+                questionText: 'I\'d rather wrestle a pig than ride an ostrich',
                 possibleResponses: possibleResponses
             },
             {
-                questionText: 'Sixth question',
+                questionText: 'Chocolate chip cookies are better than vanilla ice cream.',
                 possibleResponses: possibleResponses
             },
             {
-                questionText: 'Seventh question',
+                questionText: 'I\'d rather dance in the rain than swim in the ocean.',
                 possibleResponses: possibleResponses
             },
             {
-                questionText: 'Eighth question',
+                questionText: 'When I hear people speak a foreign language, I always imagine they are saying something really important.',
                 possibleResponses: possibleResponses
             },
             {
-                questionText: 'Ninth question',
+                questionText: 'I\'d rather walk barefoot than in shoes.',
                 possibleResponses: possibleResponses
             },
             {
-                questionText: 'Tenth question',
+                questionText: 'My dream is to live in Paris.',
                 possibleResponses: possibleResponses
             }
         ];
-        let selectedScores = [];
         let numQuestions = surveyQuestions.length;
+        // gobal variables (re-set)
+        let selectedScores = [];
         let currentQuestion = 0;
         let newPerson = {
             name: '',
@@ -217,8 +210,7 @@
                 postQuestion(currentQuestion);
             });
         }
-
-        
+      
         function postQuestion(questionIndex) {
             let question = surveyQuestions[questionIndex].questionText
             let possibleResponses = surveyQuestions[questionIndex].possibleResponses
@@ -272,6 +264,21 @@
                         $(matchSection).append(matchPhoto)
                         $('#modalBody').append(matchSection);
                         $('#matchModal').modal('show');
+
+                        $('#matchModal').on('hidden.bs.modal', function (e) {
+                            $('#survey-form-header').empty();
+                            $('#survey-form-body').empty();
+                            // re-set globals
+                            selectedScores = [];
+                            currentQuestion = 0;
+                            newPerson = {
+                                name: '',
+                                photo: '',
+                                surveyScores: []
+                            }
+                            // re-start the survey
+                            postPersonal();
+                        })
                     }
                 });
             }
