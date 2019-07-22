@@ -17,25 +17,197 @@
     <!-- <link rel="stylesheet" type="text/css" href="./assets/css/style.css"> -->
     <title>FriendFinder - Survey</title>
 </head>
+
 <body>
-        <div class="container">
-            <div class="row">
-                <div class="col-md-12">
-                    <div class="jumbotron">
-                        <h1><i class='fa fa-users'></i> FriendFinder</h1>
-                        <hr>
-                        <h3>Take the survey and see your match!</h3>
-                        <br>
-                        <a href='/' role='button' class='btn btn-primary'><i class='fa fa-home'></i> Go Home</a>
-                    </div>
+    <div class="container">
+        <!-- Main Page -->
+        <div class="row">
+            <div class="col-md-12">
+                <div class="jumbotron">
+                    <h1><i class='fa fa-users'></i> FriendFinder</h1>
+                    <hr>
+                    <h3>Take the survey and see your match!</h3>
+                    <br>
+                    <a href='/' role='button' class='btn btn-primary'><i class='fa fa-home'></i> Go Home</a>
                 </div>
             </div>
         </div>
-        <script src="https://code.jquery.com/jquery-3.4.1.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
-        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
-        <script>
-            // nothing here
-        </script>
-    </body>    
+        <!-- navigation-->
+        <div class="row">
+            <div class="col-md-12">
+                <nav class="nav">
+                    <a class="nav-link" href="/api/friends">API Friends</a>
+                    <a class="nav-link" href="/">Home</a>
+                </nav>
+            </div>
+        </div>
+        <!-- Survey -->
+        <div class='row'>
+            <div class="col-md-12">
+                <form>
+                    <h3>Survey</h3>
+                    <div id="survey-form">
+                        <div class='card bg-light mb-3'>
+                            <div id='survey-form-header' class='card-header'>
+
+                            </div>
+                            <div id='survey-form-body' class="card-body">
+
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.4.1.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+    <script>
+        // global variables
+        let possibleResponses = [
+            {
+                score: 1,
+                responseText: 'Strongly Disagree'
+            },
+            {
+                score: 2,
+                responseText: 'Somewhat Disagree'
+            },
+            {
+                score: 3,
+                responseText: 'Neither agree nor disagree'
+            },
+            {
+                score: 4,
+                responseText: 'Somewhat Agree'
+            },
+            {
+                score: 5,
+                responseText: 'Strongly Agree'
+            }
+        ];
+        let surveyQuestions = [
+            {
+                questionText: 'First question',
+                possibleResponses: possibleResponses
+            },
+            {
+                questionText: 'Second question',
+                possibleResponses: possibleResponses
+            }
+        ];
+        let selectedScores = [];
+        let numQuestions = surveyQuestions.length;
+        let currentQuestion = 0;
+        let newPerson = {
+            name: '',
+            photo: '',
+            surveyScores: []
+        }
+    
+        postPersonal();
+
+        function postPersonal() {
+            $('#survey-form-header').html('Let\'s start with you...');
+            
+            htmlText = '<p class=\'card-text\'>Please provide your name and a URL link to your photo.';
+            htmlText += '<br>(Want a random photo? Use you own number (##) with  https://randomuser.me/api/portraits/men/##.jpg or https://randomuser.me/api/portraits/women/##.jpg)</p>';
+            $('#survey-form-body').html(htmlText);
+
+            let surveyName = $('<div>');
+            surveyName.attr('class', 'input-group-prepend');
+            let surveyNameLabel = $('<span>');
+            surveyNameLabel.attr('class', 'input-group-text');
+            surveyNameLabel.text('Your Name:');
+            let surveyNameInput = $('<input>');
+            surveyNameInput.attr('class', 'form-control');
+            surveyNameInput.attr('type', 'text');
+            surveyNameInput.attr('id','dataName');
+            surveyName.append(surveyNameLabel);
+            surveyName.append(surveyNameInput);
+            $('#survey-form-body').append(surveyName);
+
+            let spacer = $('<br>');
+            $('#survey-form-body').append(spacer);
+
+            let surveyPhoto = $('<div>');
+            surveyPhoto.attr('class', 'input-group-prepend');
+            let surveyPhotoLabel = $('<span>');
+            surveyPhotoLabel.attr('class', 'input-group-text');
+            surveyPhotoLabel.text('URL for your Photo:');
+            let surveyPhotoInput = $('<input>');
+            surveyPhotoInput.attr('class', 'form-control');
+            surveyPhotoInput.attr('type', 'text');
+            surveyPhotoInput.attr('id', 'dataPhotoUrl');
+            surveyPhoto.append(surveyPhotoLabel);
+            surveyPhoto.append(surveyPhotoInput);
+            $('#survey-form-body').append(surveyPhoto);
+
+            let spacer2 = $('<br>');
+            $('#survey-form-body').append(spacer2);
+
+            let submitPersonal = $('<button>');
+            submitPersonal.attr('class', 'btn btn-primary');
+            submitPersonal.attr('id', 'submitPersonal');
+            submitPersonal.text('Submit Personal Information');
+            $('#survey-form-body').append(submitPersonal);
+
+            $('#submitPersonal').on('click',(event) => {
+                event.preventDefault();
+                newPerson.name = $('#dataName').val();
+                newPerson.photo = $('#dataPhotoUrl').val();
+                console.log(newPerson);
+                postQuestion(currentQuestion);
+            });
+        }
+
+        
+        function postQuestion(questionIndex) {
+            let question = surveyQuestions[questionIndex].questionText
+            let possibleResponses = surveyQuestions[questionIndex].possibleResponses
+
+            $('#survey-form-header').text('Number ' + (questionIndex + 1));
+            $('#survey-form-body').text(question);
+            let spacer = $('<br>');
+            $('#survey-form-body').append(spacer);
+
+
+            let allSurveyChoices = $('<div>');
+            allSurveyChoices.attr('class','btn-group');
+            for (a = 0; a < possibleResponses.length; a++) {
+                let responseText = possibleResponses[a].responseText;
+                let responseScore = possibleResponses[a].score;
+                let surveyChoice = $('<button>');
+                surveyChoice.attr('class', 'btn btn-secondary dataChoice');
+                surveyChoice.text(responseText);
+                surveyChoice.attr('datascore', responseScore);
+                surveyChoice.on('click',surveyResponse) // call serveyResponse function when clicked
+                allSurveyChoices.append(surveyChoice);
+            }
+
+            $('#survey-form-body').append(allSurveyChoices);
+            
+
+        }
+        
+        function surveyResponse() {
+            event.preventDefault();
+            let score = $(this).attr('datascore');
+            // console.log (score);
+            // add the score to the newPerson.surveyScore
+            newPerson.surveyScores.push(score);
+            console.log(newPerson);
+            // move to next question
+            currentQuestion++;
+            if (currentQuestion < numQuestions) {
+                postQuestion(currentQuestion);
+            } else {
+                console.log('next step - POST to server')
+            }
+        }
+        
+    </script>
+</body>
+
 </html>
