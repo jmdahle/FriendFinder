@@ -15,6 +15,11 @@
         integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
     <!-- LOCAL stylesheet -->
     <!-- <link rel="stylesheet" type="text/css" href="./assets/css/style.css"> -->
+    <style>
+        #profilePic {
+            width: 200px;
+        }
+    </style>
     <title>FriendFinder - Survey</title>
 </head>
 
@@ -59,6 +64,25 @@
                 </form>
             </div>
         </div>
+        <!-- match modal -->
+        <div class="modal fade" id="matchModal" tabindex="-1" role="dialog">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content bg-black">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="textModalCenterTitle">Best Friend Match</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div id='modalBody' class='modal-body'>
+
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
     <script src="https://code.jquery.com/jquery-3.4.1.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
@@ -94,6 +118,38 @@
             },
             {
                 questionText: 'Second question',
+                possibleResponses: possibleResponses
+            },
+            {
+                questionText: 'Third question',
+                possibleResponses: possibleResponses
+            },
+            {
+                questionText: 'Fourth question',
+                possibleResponses: possibleResponses
+            },
+            {
+                questionText: 'Fifth question',
+                possibleResponses: possibleResponses
+            },
+            {
+                questionText: 'Sixth question',
+                possibleResponses: possibleResponses
+            },
+            {
+                questionText: 'Seventh question',
+                possibleResponses: possibleResponses
+            },
+            {
+                questionText: 'Eighth question',
+                possibleResponses: possibleResponses
+            },
+            {
+                questionText: 'Ninth question',
+                possibleResponses: possibleResponses
+            },
+            {
+                questionText: 'Tenth question',
                 possibleResponses: possibleResponses
             }
         ];
@@ -197,13 +253,27 @@
             // console.log (score);
             // add the score to the newPerson.surveyScore
             newPerson.surveyScores.push(score);
-            console.log(newPerson);
             // move to next question
             currentQuestion++;
             if (currentQuestion < numQuestions) {
                 postQuestion(currentQuestion);
             } else {
-                console.log('next step - POST to server')
+                $.post('/api/friends', newPerson, (data) => {
+                    console.log(data);
+                    // returned the matches!
+                    for (m = 0; m < data.length; m++) {
+                        let matchSection = $('<div>');
+                        let matchName = $('<h5>');
+                        let matchPhoto = $('<img>');
+                        matchName.text(data[m].name);
+                        matchPhoto.attr('src',data[m].photo);
+                        matchPhoto.attr('class', 'profilePic');
+                        $(matchSection).append(matchName);
+                        $(matchSection).append(matchPhoto)
+                        $('#modalBody').append(matchSection);
+                        $('#matchModal').modal('show');
+                    }
+                });
             }
         }
         
