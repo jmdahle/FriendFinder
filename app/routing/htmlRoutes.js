@@ -6,12 +6,12 @@ const path = require('path');
 module.exports = function (app) {
     // 'get' route to '/' maps to '../public/home.html'
     app.get('/', (req, res) => {
-        console.log('Go to Home')
+        // console.log('Go to Home')
         res.sendFile(path.join(__dirname,'../public/home.html'));
     });
     // 'get' route to '/survey' maps to '../public.html'
     app.get('/survey', (req, res) => {
-        console.log('Go to Survey')
+        // console.log('Go to Survey')
         res.sendFile(path.join(__dirname, '../public/survey.html'));
     });
 }

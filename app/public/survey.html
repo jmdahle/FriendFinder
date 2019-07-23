@@ -212,12 +212,13 @@
         }
       
         function postQuestion(questionIndex) {
+            $('#survey-form-header').empty();
+            $('#survey-form-body').empty();
             let question = surveyQuestions[questionIndex].questionText
             let possibleResponses = surveyQuestions[questionIndex].possibleResponses
 
-            $('#survey-form-header').text('Number ' + (questionIndex + 1));
-            $('#survey-form-body').text(question);
-            let spacer = $('<br>');
+            $('#survey-form-header').text(question);
+            let spacer = $('<br>Select the option below that best indicates your degree of agreement or disagreement.');
             $('#survey-form-body').append(spacer);
 
 
@@ -227,7 +228,7 @@
                 let responseText = possibleResponses[a].responseText;
                 let responseScore = possibleResponses[a].score;
                 let surveyChoice = $('<button>');
-                surveyChoice.attr('class', 'btn btn-secondary dataChoice');
+                surveyChoice.attr('class', 'btn btn-primary dataChoice');
                 surveyChoice.text(responseText);
                 surveyChoice.attr('datascore', responseScore);
                 surveyChoice.on('click',surveyResponse) // call serveyResponse function when clicked
