@@ -165,9 +165,9 @@
             $('#survey-form-body').html(htmlText);
 
             let surveyName = $('<div>');
-            surveyName.attr('class', 'input-group-prepend');
-            let surveyNameLabel = $('<span>');
-            surveyNameLabel.attr('class', 'input-group-text');
+            surveyName.attr('class', 'form-group');
+            let surveyNameLabel = $('<label>');
+            surveyNameLabel.attr('for', 'dataName');
             surveyNameLabel.text('Your Name:');
             let surveyNameInput = $('<input>');
             surveyNameInput.attr('class', 'form-control');
@@ -181,9 +181,9 @@
             $('#survey-form-body').append(spacer);
 
             let surveyPhoto = $('<div>');
-            surveyPhoto.attr('class', 'input-group-prepend');
-            let surveyPhotoLabel = $('<span>');
-            surveyPhotoLabel.attr('class', 'input-group-text');
+            surveyPhoto.attr('class', 'form-group');
+            let surveyPhotoLabel = $('<label>');
+            surveyPhotoLabel.attr('for', 'dataPhotoUrl');
             surveyPhotoLabel.text('URL for your Photo:');
             let surveyPhotoInput = $('<input>');
             surveyPhotoInput.attr('class', 'form-control');
@@ -228,7 +228,7 @@
                 let responseText = possibleResponses[a].responseText;
                 let responseScore = possibleResponses[a].score;
                 let surveyChoice = $('<button>');
-                surveyChoice.attr('class', 'btn btn-primary dataChoice');
+                surveyChoice.attr('class', 'btn btn-primary btn-sm dataChoice');
                 surveyChoice.text(responseText);
                 surveyChoice.attr('datascore', responseScore);
                 surveyChoice.on('click',surveyResponse) // call serveyResponse function when clicked
